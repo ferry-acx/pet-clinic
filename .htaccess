@@ -1,0 +1,4 @@
+RewriteEngine On
+RewriteCond %{ENV:HTTPS} !on [OR]
+RewriteCond %{HTTP_HOST} !^www.pet-clinic.accenzo.site$ [NC]
+RewriteRule ^(.*)$ https://www.pet-clinic.accenzo.site/$1 [L,R=301]
