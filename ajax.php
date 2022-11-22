@@ -243,7 +243,8 @@ if(isset($_POST['changePass'])) {
 
     $email = $_POST['user_email'];
     $pass = trim($_POST['pass']);
-
+    $pass = password_hash($pass, PASSWORD_DEFAULT);
+    
     $update = $pdo->prepare("UPDATE  users set password=:password where email =:email");
     $update->bindParam(":password", $pass);
     $update->bindParam(":email", $email);
