@@ -215,7 +215,7 @@ if(isset($_POST['email'])) {
         $pass = trim(generatePassword());
 
         $update = $pdo->prepare("UPDATE  users set password=:password where email =:email");
-        $update->bindParam(":password", $pass);
+        $update->bindParam(":password", md5($pass));
         $update->bindParam(":email", $email);
 
         if($update->execute()){
@@ -240,13 +240,12 @@ if(isset($_POST['email'])) {
 }
 
 if(isset($_POST['changePass'])) {
-
+   
     $email = $_POST['user_email'];
     $pass = trim($_POST['pass']);
-    $pass = password_hash($pass, PASSWORD_DEFAULT);
-    
+
     $update = $pdo->prepare("UPDATE  users set password=:password where email =:email");
-    $update->bindParam(":password", $pass);
+    $update->bindParam(":password", md5($pass));
     $update->bindParam(":email", $email);
 
     if($update->execute()){

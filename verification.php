@@ -76,7 +76,7 @@ if(isset($_POST["btnupdate"])){
     $select_user = $pdo->prepare("SELECT * from `users` where  `email` = :email and `password` = :oldpassword");
 
     $select_user ->bindParam(":email",$email);
-    $select_user -> bindParam(":oldpassword",$oldpassword);
+    $select_user -> bindParam(":oldpassword",md5($oldpassword));
     $select_user -> execute();
     // var_dump("I am here");
     // var_dump($select_user->rowCount());
@@ -86,7 +86,7 @@ if(isset($_POST["btnupdate"])){
         $id = $row->id;
         if($newpassword == $confirmpassword){
           $update_user = $pdo->prepare("UPDATE `users` SET `password`=:newpassword, `status`='ACTIVE' where `id`=:id");
-          $update_user->bindParam(":newpassword",$newpassword);
+          $update_user->bindParam(":newpassword",md5($newpassword));
           $update_user->bindParam(":id",$id);
 
          /* if($update_user->rowCount()){ */

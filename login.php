@@ -22,7 +22,7 @@ if(isset($_POST["btn_login"])){
   //echo "<pre>",print_r($_POST),"</pre>";
 	$get_user = $pdo->prepare("SELECT users.id as userid, users.email, users.password, users.role, users.status, customers.id, customers.name  FROM `users` inner JOIN customers on users.email=customers.email WHERE users.`email` = :email and `password` = :password UNION SELECT users.id as userid, users.email, users.password, users.role, users.status, employees.id, employees.name  FROM `users` inner JOIN employees on users.email=employees.email  WHERE users.`email` = :email and `password` = :password;");
 	$get_user->bindParam(":email",$email);
-	$get_user->bindParam(":password",$password);
+	$get_user->bindParam(":password",md5($password));
 	$get_user->execute();
 
    // $get_user->rowCount() can be used in if statement
@@ -76,7 +76,7 @@ if (isset($_POST['btn_signup'])) {
 
          $insert_user = $pdo->prepare("INSERT INTO users ( email, password, role ) VALUES( :email, :password, 'customer' )");
   $insert_user->bindParam(":email", $cus_email);
-  $insert_user->bindParam(":password", $pass );
+  $insert_user->bindParam(":password", md5($pass) );
   $insert_user->execute();
 
   $to = $cus_email;
