@@ -256,7 +256,7 @@ $get_info = $pdo->prepare("SELECT users.profile from users where email=:email");
               </p>
             </a>
           </li>
-          <li class="nav-header">BILLINGS AND PAYMENTS</li> 
+          <li class="nav-header">TRANSACTION RECORDS</li> 
           <li class="nav-item mt-2" id="nav-payser">
             <a href="payservices.php" class="nav-link">
               <i class="nav-icon fas fa-hand-holding-medical"></i>
@@ -271,6 +271,15 @@ $get_info = $pdo->prepare("SELECT users.profile from users where email=:email");
               <i class="nav-icon fas fa-cart-arrow-down"></i>
               <p>
                 Orders
+                <span class="right badge badge-danger"></span>
+              </p>
+            </a>
+          </li>
+          <li class="nav-item mt-2" id="nav-sales">
+            <a href="sales.php" class="nav-link">
+              <i class="nav-icon fas fa-coins"></i>
+              <p>
+                Product Sales
                 <span class="right badge badge-danger"></span>
               </p>
             </a>

@@ -93,8 +93,14 @@ if(isset($_POST['Event'])) {
     $id = $_POST['Event'][0];
     $start = $_POST['Event'][1];
     $end = $_POST['Event'][2];
+    $isPersonal = $_POST['Event'][3];
+
+    if($isPersonal == 'false'){
+        $update = $pdo->prepare("UPDATE  events set start=:start, end=:end, status='FOR APPROVAL' where id =:id");
+    } else {
+        $update = $pdo->prepare("UPDATE  events set start=:start, end=:end where id =:id");
+    }
     
-    $update = $pdo->prepare("UPDATE  events set start=:start, end=:end where id =:id");
     $update->bindParam(":id", $id);
     $update->bindParam(":start", $start);
     $update->bindParam(":end", $end);

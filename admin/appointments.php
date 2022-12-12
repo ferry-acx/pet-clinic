@@ -998,6 +998,8 @@ if(isset($_GET['declined'])){
 
         $('#addEvent #start').val(moment(event.startStr).format('YYYY-MM-DD HH:mm:ss'));
         $('#addEvent #end').val(moment(event.endStr).format('YYYY-MM-DD HH:mm:ss'));
+        $("#addEvent #customer_id").val(0);
+        $("#addEvent #customer_id").trigger('change');
         $('#addEvent').modal('show');
       },
 

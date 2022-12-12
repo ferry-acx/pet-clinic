@@ -181,6 +181,18 @@ $req->execute();
 
 $events = $req->fetchAll();
 
+$sql = "SELECT start, end FROM events where (customer_id=0 or isPersonal='false') and status in ('PENDING','DONE','FOR APPROVAL')";
+$data = $pdo->query($sql);
+$data->setFetchMode(PDO::FETCH_ASSOC);
+
+  while ($row = $data->fetch()){
+
+    $na_start ='"'.$row['start'].'",'.$na_start ;
+    $na_end = '"'.$row['end'].'",'.$na_end ;
+  }
+
+  $na_start = trim($na_start,",");
+  $na_end = trim($na_end,",");
 
 if(isset($_GET['cancelled'])){
 
@@ -802,9 +814,14 @@ if(isset($_POST['doneEvent'])){
         $("#crbtn-lbl").removeClass("active");
         if(isSunday(d1)){
             $("#crbtn").attr("disabled","disabled");
-            toastr.info("Cannot schedule clinical appointments on Sundays!")
+            toastr.info("Cannot schedule clinical appointments on Sundays!");
         } else {
-          $("#crbtn").removeAttr("disabled");
+          if(isNA(event.startStr)) {
+            $("#crbtn").attr("disabled","disabled");
+            toastr.info("The veterinarian is not available at this schedule!");
+          } else {
+            $("#crbtn").removeAttr("disabled");
+          }
         }
 
         $('#addEvent #start').val(moment(event.startStr).format('YYYY-MM-DD HH:mm:ss'));
@@ -819,7 +836,7 @@ if(isset($_POST['doneEvent'])){
         d2 = moment(d2).subtract(1, 'days').toDate();
         if(isSunday(d1)||isSunday(d2)){
             $("#clinical-rbtn").attr("disabled","disabled");
-            toastr.info("Cannot schedule clinical appointments on Sundays!")
+            toastr.info("Cannot schedule clinical appointments on Sundays!");
         } else {
           $("#clinical-rbtn").removeAttr("disabled");
         }
@@ -967,6 +984,31 @@ if(isset($_POST['doneEvent'])){
     return date.getDay() === 0;
   }
 
+  function isNA(selected_date){
+
+    var na_start = [<?=$na_start?>];
+    var na_end = [<?=$na_end?>];
+
+    var selected = moment(selected_date).format('YYYY-MM-DD HH:mm:ss');
+    var s_date = moment(selected_date).format('YYYY-MM-DD')+" 00:00:00";
+
+    var startDate;
+    var endDate;
+
+    for(let x=0; x<na_start.length;x++ ){
+      startDate = moment(na_start[x]).format('YYYY-MM-DD HH:mm:ss');
+      endDate = moment(na_end[x]).format('YYYY-MM-DD HH:mm:ss');
+
+
+      if (!(moment(selected).isBefore(startDate) || moment(selected).isAfter(endDate) ) || selected==s_date ){
+        return true;
+      }
+    }
+
+    return false;
+
+  }
+
   function edit(info){
    start = moment(info.event.startStr).format('YYYY-MM-DD HH:mm:ss');
    if(info.event.endStr){
@@ -981,6 +1023,7 @@ if(isset($_POST['doneEvent'])){
       Event[0] = id;
       Event[1] = start;
       Event[2] = end;
+      Event[3] = info.event.extendedProps.isPersonal;
       
       $.ajax({
        url: 'ajax.php',
